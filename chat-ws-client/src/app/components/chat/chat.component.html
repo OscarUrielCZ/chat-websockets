@@ -1,0 +1,80 @@
+<div class="card m-4">
+  <div class="card-header">
+    <ul class="nav nav-pills card-header-pills">
+      <li class="nav-item me-2">
+        <input
+          class="form-control"
+          type="text"
+          name="username"
+          placeholder="Nombre de usuario"
+          [(ngModel)]="message.username"
+          [disabled]="connected"
+        />
+      </li>
+      <li class="nav-item" *ngIf="!connected">
+        <button
+          class="btn btn-success"
+          (click)="connect()"
+          [disabled]="!message.username"
+        >
+          Conectar
+        </button>
+      </li>
+      <li class="nav-item" *ngIf="connected">
+        <button class="btn btn-warning" (click)="disconnect()">
+          Desconectar
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div
+    class="card-body"
+    *ngIf="connected"
+    style="overflow-y: scroll; height: 400px"
+  >
+    <ul class="list-group list-group-flush">
+      <li
+        class="list-group-item list-group-item-light"
+        *ngFor="let message of messageHistory"
+      >
+        @if (message.type === "join") {
+
+        {{ message.date | date : "shortTime" }} Se ha unido
+        <span [ngStyle]="{ color: message.textColor, 'font-weight': 'bold' }">{{
+          message.username
+        }}</span>
+        a la sala } @else if (message.type === "message") {
+        {{ message.date | date : "shortTime" }}
+        <span [ngStyle]="{ color: message.textColor }">{{
+          message.username
+        }}</span
+        >:
+        {{ message.content }}
+        }
+      </li>
+    </ul>
+  </div>
+
+  <div class="card-footer" *ngIf="connected">
+    <form (ngSubmit)="sendMessage()">
+      <div class="row my-1" *ngIf="writing">
+        {{ writing }}
+      </div>
+      <div class="row">
+        <div class="col">
+          <input
+            type="text"
+            class="form-control"
+            name="content"
+            [(ngModel)]="message.content"
+            placeholder="Escribe un mensaje..."
+            (keyup)="writingMessage()"
+          />
+        </div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
